@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { fetchCards } from '@/features/cardTypes/cardsApi/cardsApi';
+import { getUniqueCardsByType } from '@/features/cardTypes/utils/cardUtils';
 
 export interface CardsState {
   cards: HearthstoneCard[];
@@ -22,16 +23,7 @@ export const useCardsStore = create<CardsState>((set) => ({
     set({ isLoading: true, error: null });
     try {
       const { cards, error } = await fetchCards();
-      const seenTypes = new Set<string>();
-      const uniqueCardsByType: HearthstoneCard[] = [];
-
-      for (const card of cards) {
-        if (card.type && !seenTypes.has(card.type.toLowerCase())) {
-          seenTypes.add(card.type.toLowerCase());
-          uniqueCardsByType.push(card);
-        }
-      }
-
+      const uniqueCardsByType = getUniqueCardsByType(cards);
       set({ cards, uniqueCardsByType, isLoading: false, error });
     } catch (err: any) {
       set({

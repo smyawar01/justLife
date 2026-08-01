@@ -6,6 +6,7 @@ import { CardTile } from '@/features/cardTypes/components';
 import { Header } from '@/features/shared/components';
 import { useTheme } from '@/core/theme';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
+import { filterCardsByType } from '@/features/cardTypes/utils/cardUtils';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigation }) => {
@@ -14,9 +15,7 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
   const { colors } = useTheme();
 
   const filteredCards = useMemo(() => {
-    return cards.filter(
-      (card) => (card.type || card.name)?.toLowerCase() === type.toLowerCase()
-    );
+    return filterCardsByType(cards, type);
   }, [cards, type]);
 
   const renderCardTile = useCallback(

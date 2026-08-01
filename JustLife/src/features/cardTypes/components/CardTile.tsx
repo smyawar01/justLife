@@ -2,35 +2,20 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { useTheme } from '@/core/theme';
+import { stripHtml } from '@/core/utils/textUtils';
+import { getRarityColor } from '@/features/cardTypes/utils/cardUtils';
 
 export interface CardTileProps {
   card: HearthstoneCard;
   onPress?: () => void;
 }
 
-const RARITY_COLORS: Record<string, string> = {
-  Free: '#64748B',
-  Common: '#94A3B8',
-  Rare: '#3B82F6',
-  Epic: '#A855F7',
-  Legendary: '#F59E0B',
-};
-
 const CardTileComponent: React.FC<CardTileProps> = ({ card, onPress }) => {
   const { colors } = useTheme();
   const [imageError, setImageError] = useState(false);
 
-  const rarityColor = (card.rarity && RARITY_COLORS[card.rarity]) || colors.textMuted;
-  
-  const cleanText = useMemo(() => {
-    if (!card.text) return '';
-    return card.text
-      .replace(/<[^>]*>?/gm, '')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
-      .replace(/&amp;/g, '&')
-      .replace(/&quot;/g, '"');
-  }, [card.text]);
+  const rarityColor = getRarityColor(card.rarity, colors.textMuted);
+  const cleanText = useMemo(() => stripHtml(card.text), [card.text]);
 
   const accessibilityLabel = `${card.name}${card.rarity ? `, ${card.rarity} rarity` : ''}${
     card.type ? `, ${card.type}` : ''
