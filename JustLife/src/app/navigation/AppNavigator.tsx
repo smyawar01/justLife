@@ -1,18 +1,31 @@
-import React, { useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React from 'react';
+import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { CardListScreen } from '../../features/cardList/screens/CardListScreen';
 import { CardTypesScreen } from '../../features/cardTypes/screens/CardTypesScreen';
-import { CardsByTypeScreen } from '../../features/cards/screens/CardsByTypeScreen';
+import { RootStackParamList } from './types';
+import { useTheme } from '../../core/theme/useTheme';
+
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export const AppNavigator: React.FC = () => {
-  const [selectedType, setSelectedType] = useState<string | null>(null);
+  const { colors } = useTheme();
 
   return (
-    <View style={[styles.container]}>
-      {selectedType ? (
-        <CardsByTypeScreen/>
-      ) : (
-        <CardTypesScreen/>
-      )}
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="CardTypesScreen"
+          screenOptions={{
+            headerShown: false,
+            contentStyle: { backgroundColor: colors.background },
+          }}
+        >
+          <Stack.Screen name="CardTypesScreen" component={CardTypesScreen} />
+          <Stack.Screen name="CardListScreen" component={CardListScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
     </View>
   );
 };
