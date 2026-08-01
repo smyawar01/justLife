@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from '@/core/theme';
 
 export interface HeaderProps {
@@ -18,9 +19,10 @@ export const Header: React.FC<HeaderProps> = ({
   const { colors, toggleTheme, themeToggleLabel } = useTheme();
 
   return (
-    <View
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
       style={[
-        styles.container,
+        styles.safeArea,
         {
           backgroundColor: colors.headerBackground,
           borderBottomColor: colors.surfaceBorder,
@@ -28,56 +30,60 @@ export const Header: React.FC<HeaderProps> = ({
       ]}
       testID="header-container"
     >
-      <View style={styles.leftContainer}>
-        {showBack && (
+      <View style={styles.container}>
+        <View style={styles.leftContainer}>
+          {showBack && (
+            <TouchableOpacity
+              onPress={onBackPress}
+              style={styles.backButton}
+              accessibilityLabel="Go back"
+              accessibilityRole="button"
+              testID="header-back-button"
+            >
+              <Text style={[styles.backText, { color: colors.text }]}>← Back</Text>
+            </TouchableOpacity>
+          )}
+        </View>
+
+        <View style={styles.titleContainer}>
+          <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
+            {title}
+          </Text>
+          {subtitle && (
+            <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
+              {subtitle}
+            </Text>
+          )}
+        </View>
+
+        <View style={styles.rightContainer}>
           <TouchableOpacity
-            onPress={onBackPress}
-            style={styles.backButton}
-            accessibilityLabel="Go back"
+            onPress={toggleTheme}
+            style={[styles.themeToggle, { backgroundColor: colors.inputBackground }]}
+            accessibilityLabel="Toggle Theme"
             accessibilityRole="button"
-            testID="header-back-button"
+            testID="theme-toggle-button"
           >
-            <Text style={[styles.backText, { color: colors.text }]}>← Back</Text>
+            <Text style={[styles.themeToggleText, { color: colors.text }]}>
+              {themeToggleLabel}
+            </Text>
           </TouchableOpacity>
-        )}
+        </View>
       </View>
-
-      <View style={styles.titleContainer}>
-        <Text style={[styles.title, { color: colors.text }]} numberOfLines={1}>
-          {title}
-        </Text>
-        {subtitle && (
-          <Text style={[styles.subtitle, { color: colors.textSecondary }]} numberOfLines={1}>
-            {subtitle}
-          </Text>
-        )}
-      </View>
-
-      <View style={styles.rightContainer}>
-        <TouchableOpacity
-          onPress={toggleTheme}
-          style={[styles.themeToggle, { backgroundColor: colors.inputBackground }]}
-          accessibilityLabel="Toggle Theme"
-          accessibilityRole="button"
-          testID="theme-toggle-button"
-        >
-          <Text style={[styles.themeToggleText, { color: colors.text }]}>
-            {themeToggleLabel}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    borderBottomWidth: 1,
+  },
   container: {
     height: 60,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    borderBottomWidth: 1,
   },
   leftContainer: {
     width: 70,

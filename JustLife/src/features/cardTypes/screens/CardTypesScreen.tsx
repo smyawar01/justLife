@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
-import { CardTile } from '@/features/cardTypes/components';
+import { CardTile, SearchBar, EmptySearchView } from '@/features/cardTypes/components';
 import { Header, LoadingView, ErrorView } from '@/features/shared/components';
 import { useTheme } from '@/core/theme';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { CardTypesScreenProps } from '@/app/navigation/types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) => {
   const { colors } = useTheme();
@@ -14,26 +15,54 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
     isLoading,
     error,
     loadCards,
+    searchQuery,
+    isSearching,
+    searchResults,
+    searchError,
+    setSearchQuery,
+    searchBySlug,
+    clearSearch,
   } = useCardsStore();
 
   useEffect(() => {
     loadCards();
   }, [loadCards]);
 
+  const isSearchActive = searchQuery.trim().length > 0;
+  const listData = isSearchActive ? searchResults : uniqueCardsByType;
+
+  const getSubtitle = () => {
+    if (isSearchActive) {
+      if (isSearching) return 'Searching...';
+      return `${searchResults.length} search result${searchResults.length === 1 ? '' : 's'}`;
+    }
+    return `${uniqueCardsByType.length} unique types`;
+  };
+
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.container, { backgroundColor: colors.background }]}>
       <Header
         title="Cards By Type"
-        subtitle={`${uniqueCardsByType.length} unique types`}
+        subtitle={getSubtitle()}
       />
 
-      {isLoading ? (
-        <LoadingView message="Loading cards..." />
-      ) : error ? (
+      <SearchBar
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+        onSearch={searchBySlug}
+        onClear={clearSearch}
+        placeholder="Search card by name or slug..."
+      />
+
+      {isLoading || isSearching ? (
+        <LoadingView message={isSearching ? `Searching for "${searchQuery}"...` : "Loading cards..."} />
+      ) : error && !isSearchActive ? (
         <ErrorView message={error} onRetry={loadCards} />
+      ) : isSearchActive && (searchResults.length === 0 || searchError) ? (
+        <EmptySearchView query={searchQuery} onClear={clearSearch} />
       ) : (
         <FlatList<HearthstoneCard>
-          data={uniqueCardsByType}
+          data={listData}
           keyExtractor={(item) => item.cardId || item.name}
           renderItem={({ item }) => (
             <CardTile
@@ -54,7 +83,7 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
           contentContainerStyle={styles.listPadding}
         />
       )}
-    </View>
+    </SafeAreaView>
   );
 };
 

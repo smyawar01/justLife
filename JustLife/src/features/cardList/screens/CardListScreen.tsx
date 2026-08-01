@@ -6,6 +6,7 @@ import { CardTile } from '@/features/cardTypes/components';
 import { Header } from '@/features/shared/components';
 import { useTheme } from '@/core/theme';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigation }) => {
   const { type } = route.params;
@@ -19,7 +20,7 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
   }, [cards, type]);
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
+    <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.container, { backgroundColor: colors.background }]}>
       <Header
         title={`${type} Cards`}
         subtitle={`${filteredCards.length} cards`}
@@ -40,7 +41,7 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
         }
         contentContainerStyle={styles.listPadding}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 

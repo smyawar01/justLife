@@ -1,20 +1,13 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { AppNavigator } from './navigation/AppNavigator';
-
-const MainApp: React.FC = () => {
-
-  return (
-    <SafeAreaView style={[styles.container]}>
-      <AppNavigator />
-    </SafeAreaView>
-  );
-};
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppNavigator } from '@/app/navigation/AppNavigator';
 
 export default function App() {
   return (
-      <MainApp />
+    <SafeAreaProvider style={styles.container}>
+      <AppNavigator />
+    </SafeAreaProvider>
   );
 }
 

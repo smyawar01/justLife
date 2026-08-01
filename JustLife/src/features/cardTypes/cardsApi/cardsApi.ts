@@ -29,6 +29,29 @@ export async function fetchCards(): Promise<{ cards: HearthstoneCard[]; error: s
   };
 }
 
+export async function searchCardBySlug(rawText: string): Promise<{ card: HearthstoneCard | null; error: string | null }> {
+  const slug = rawText.trim().toLowerCase().replace(/\s+/g, '-');
+  if (!slug) {
+    return { card: null, error: null };
+  }
+
+  const response = await httpGet<RawCardItem | { error: string }>(`/cards/${slug}`);
+
+  if (response.error || !response.data || ('error' in response.data && typeof response.data.error === 'string')) {
+    return {
+      card: null,
+      error: response.error || (response.data && 'error' in response.data ? response.data.error : 'Card not found'),
+    };
+  }
+
+  if ('name' in response.data || 'slug' in response.data || 'id' in response.data) {
+    const card = parseCard(response.data as RawCardItem);
+    return { card, error: null };
+  }
+
+  return { card: null, error: 'Card not found' };
+}
+
 function parseCard(raw: RawCardItem | any): HearthstoneCard {
   const rarityName =
     typeof raw?.rarity === 'object' ? raw.rarity?.name || raw.rarity?.slug : raw?.rarity;
