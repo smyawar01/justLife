@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { useTheme } from '@/core/theme';
@@ -16,11 +16,25 @@ const RARITY_COLORS: Record<string, string> = {
   Legendary: '#F59E0B',
 };
 
-export const CardTile: React.FC<CardTileProps> = ({ card, onPress }) => {
+const CardTileComponent: React.FC<CardTileProps> = ({ card, onPress }) => {
   const { colors } = useTheme();
+  const [imageError, setImageError] = useState(false);
 
   const rarityColor = (card.rarity && RARITY_COLORS[card.rarity]) || colors.textMuted;
-  const cleanText = card.text ? card.text.replace(/<[^>]*>?/gm, '') : '';
+  
+  const cleanText = useMemo(() => {
+    if (!card.text) return '';
+    return card.text
+      .replace(/<[^>]*>?/gm, '')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"');
+  }, [card.text]);
+
+  const accessibilityLabel = `${card.name}${card.rarity ? `, ${card.rarity} rarity` : ''}${
+    card.type ? `, ${card.type}` : ''
+  }`;
 
   return (
     <TouchableOpacity
@@ -34,6 +48,10 @@ export const CardTile: React.FC<CardTileProps> = ({ card, onPress }) => {
       onPress={onPress}
       activeOpacity={0.7}
       disabled={!onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel}
+      accessibilityHint={onPress ? 'Navigates to list of cards for this type' : undefined}
       testID={`card-tile-${card.cardId}`}
     >
       <View style={styles.headerRow}>
@@ -50,13 +68,20 @@ export const CardTile: React.FC<CardTileProps> = ({ card, onPress }) => {
         ) : null}
       </View>
 
-      {card.img ? (
+      {card.img && !imageError ? (
         <Image
           source={{ uri: card.img }}
           style={styles.cardImage}
           resizeMode="contain"
+          onError={() => setImageError(true)}
           testID={`card-image-${card.cardId}`}
         />
+      ) : card.img && imageError ? (
+        <View style={[styles.placeholderContainer, { backgroundColor: colors.inputBackground }]}>
+          <Text style={[styles.placeholderText, { color: colors.textMuted }]}>
+            🖼️ Image Unavailable
+          </Text>
+        </View>
       ) : null}
 
       {cleanText ? (
@@ -67,6 +92,8 @@ export const CardTile: React.FC<CardTileProps> = ({ card, onPress }) => {
     </TouchableOpacity>
   );
 };
+
+export const CardTile = React.memo(CardTileComponent);
 
 const styles = StyleSheet.create({
   cardContainer: {
@@ -98,6 +125,18 @@ const styles = StyleSheet.create({
     height: 140,
     width: '100%',
     marginVertical: 8,
+  },
+  placeholderContainer: {
+    height: 100,
+    width: '100%',
+    marginVertical: 8,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  placeholderText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
   cardText: {
     fontSize: 13,

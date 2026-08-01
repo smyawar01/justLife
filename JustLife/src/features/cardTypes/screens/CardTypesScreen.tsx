@@ -43,6 +43,25 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
     return `${uniqueCardsByType.length} unique types`;
   };
 
+  // Memoized renderItem to prevent function recreation on re-renders
+  const renderCardTile = useCallback(
+    ({ item }: { item: HearthstoneCard }) => (
+      <CardTile
+        card={item}
+        onPress={() => {
+          const cardType = item.type || item.name;
+          navigation.navigate('CardListScreen', { type: cardType });
+        }}
+      />
+    ),
+    [navigation]
+  );
+
+  const keyExtractor = useCallback(
+    (item: HearthstoneCard) => item.cardId || item.name,
+    []
+  );
+
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.container, { backgroundColor: colors.background }]}>
       <Header
@@ -62,25 +81,21 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
       ) : error && !search.isActive ? (
         <ErrorView message={error} onRetry={loadCards} />
       ) : search.isActive && (search.results.length === 0 || search.error) ? (
-        <EmptySearchView 
-          query={search.query} 
+        <EmptySearchView
+          query={search.query}
           title="No Card Found"
           message={`We couldn't find any card matching "${search.query}". Try searching by slug like "a-light-in-the-darkness".`}
-          onClear={search.clear} 
+          onClear={search.clear}
         />
       ) : (
         <FlatList<HearthstoneCard>
           data={listData}
-          keyExtractor={(item) => item.cardId || item.name}
-          renderItem={({ item }) => (
-            <CardTile
-              card={item}
-              onPress={() => {
-                const cardType = item.type || item.name;
-                navigation.navigate('CardListScreen', { type: cardType });
-              }}
-            />
-          )}
+          keyExtractor={keyExtractor}
+          renderItem={renderCardTile}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
+          windowSize={5}
+          removeClippedSubviews={true}
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
               <Text style={[styles.emptyText, { color: colors.textMuted }]}>

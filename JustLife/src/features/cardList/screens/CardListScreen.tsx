@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
 import { CardListScreenProps } from '@/app/navigation/types';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
@@ -19,6 +19,16 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
     );
   }, [cards, type]);
 
+  const renderCardTile = useCallback(
+    ({ item }: { item: HearthstoneCard }) => <CardTile card={item} />,
+    []
+  );
+
+  const keyExtractor = useCallback(
+    (item: HearthstoneCard, index: number) => item.cardId || `${item.name}-${index}`,
+    []
+  );
+
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.container, { backgroundColor: colors.background }]}>
       <Header
@@ -30,8 +40,12 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
 
       <FlatList<HearthstoneCard>
         data={filteredCards}
-        keyExtractor={(item, index) => item.cardId || `${item.name}-${index}`}
-        renderItem={({ item }) => <CardTile card={item} />}
+        keyExtractor={keyExtractor}
+        renderItem={renderCardTile}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={true}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Text style={[styles.emptyText, { color: colors.textMuted }]} testID="empty-list-message">
