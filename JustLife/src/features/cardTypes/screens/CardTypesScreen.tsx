@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useCallback } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
-import { CardTile, SearchBar, EmptySearchView } from '@/features/cardTypes/components';
-import { Header, LoadingView, ErrorView } from '@/features/shared/components';
+import { searchCardBySlug } from '@/features/cardTypes/cardsApi/cardsApi';
+import { CardTile } from '@/features/cardTypes/components';
+import { Header, LoadingView, ErrorView, SearchBar, EmptySearchView, useSearch } from '@/features/shared/components';
 import { useTheme } from '@/core/theme';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { CardTypesScreenProps } from '@/app/navigation/types';
@@ -15,26 +16,29 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
     isLoading,
     error,
     loadCards,
-    searchQuery,
-    isSearching,
-    searchResults,
-    searchError,
-    setSearchQuery,
-    searchBySlug,
-    clearSearch,
   } = useCardsStore();
+
+  const handleSearchApi = useCallback(async (query: string) => {
+    const { card, error: searchErr } = await searchCardBySlug(query);
+    if (searchErr) throw new Error(searchErr);
+    return card ? [card] : [];
+  }, []);
+
+  const search = useSearch<HearthstoneCard>({
+    searchFn: handleSearchApi,
+    debounceDelay: 500,
+  });
 
   useEffect(() => {
     loadCards();
   }, [loadCards]);
 
-  const isSearchActive = searchQuery.trim().length > 0;
-  const listData = isSearchActive ? searchResults : uniqueCardsByType;
+  const listData = search.isActive ? search.results : uniqueCardsByType;
 
   const getSubtitle = () => {
-    if (isSearchActive) {
-      if (isSearching) return 'Searching...';
-      return `${searchResults.length} search result${searchResults.length === 1 ? '' : 's'}`;
+    if (search.isActive) {
+      if (search.isSearching) return 'Searching...';
+      return `${search.results.length} search result${search.results.length === 1 ? '' : 's'}`;
     }
     return `${uniqueCardsByType.length} unique types`;
   };
@@ -47,19 +51,23 @@ export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) 
       />
 
       <SearchBar
-        value={searchQuery}
-        onChangeText={setSearchQuery}
-        onSearch={searchBySlug}
-        onClear={clearSearch}
+        value={search.query}
+        onChangeText={search.setQuery}
+        onClear={search.clear}
         placeholder="Search card by name or slug..."
       />
 
-      {isLoading || isSearching ? (
-        <LoadingView message={isSearching ? `Searching for "${searchQuery}"...` : "Loading cards..."} />
-      ) : error && !isSearchActive ? (
+      {isLoading || search.isSearching ? (
+        <LoadingView message={search.isSearching ? `Searching for "${search.query}"...` : "Loading cards..."} />
+      ) : error && !search.isActive ? (
         <ErrorView message={error} onRetry={loadCards} />
-      ) : isSearchActive && (searchResults.length === 0 || searchError) ? (
-        <EmptySearchView query={searchQuery} onClear={clearSearch} />
+      ) : search.isActive && (search.results.length === 0 || search.error) ? (
+        <EmptySearchView 
+          query={search.query} 
+          title="No Card Found"
+          message={`We couldn't find any card matching "${search.query}". Try searching by slug like "a-light-in-the-darkness".`}
+          onClear={search.clear} 
+        />
       ) : (
         <FlatList<HearthstoneCard>
           data={listData}

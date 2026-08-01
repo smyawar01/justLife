@@ -4,12 +4,14 @@ import { useTheme } from '@/core/theme';
 
 export interface EmptySearchViewProps {
   query?: string;
+  title?: string;
   message?: string;
-  onClear: () => void;
+  onClear?: () => void;
 }
 
 export const EmptySearchView: React.FC<EmptySearchViewProps> = ({
   query = '',
+  title = 'No Results Found',
   message,
   onClear,
 }) => {
@@ -17,29 +19,31 @@ export const EmptySearchView: React.FC<EmptySearchViewProps> = ({
 
   const displayMessage = message || (
     query 
-      ? `We couldn't find any card matching "${query}". Try searching by slug like "a-light-in-the-darkness".`
-      : 'No matching cards found.'
+      ? `We couldn't find any items matching "${query}".`
+      : 'No matching items found.'
   );
 
   return (
     <View style={styles.container} testID="empty-search-view">
       <Text style={styles.icon}>🔍</Text>
       <Text style={[styles.title, { color: colors.text }]}>
-        No Card Found
+        {title}
       </Text>
       <Text style={[styles.text, { color: colors.textMuted }]}>
         {displayMessage}
       </Text>
-      <TouchableOpacity
-        style={[styles.clearButton, { backgroundColor: colors.primary }]}
-        onPress={onClear}
-        accessibilityRole="button"
-        testID="clear-search-button"
-      >
-        <Text style={[styles.clearButtonText, { color: colors.surface }]}>
-          Clear Search
-        </Text>
-      </TouchableOpacity>
+      {onClear && (
+        <TouchableOpacity
+          style={[styles.clearButton, { backgroundColor: colors.primary }]}
+          onPress={onClear}
+          accessibilityRole="button"
+          testID="clear-search-button"
+        >
+          <Text style={[styles.clearButtonText, { color: colors.surface }]}>
+            Clear Search
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };

@@ -1,42 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { useTheme } from '@/core/theme';
 
 export interface SearchBarProps {
   value: string;
   onChangeText: (text: string) => void;
-  onSearch?: (text: string) => void;
   onClear: () => void;
   placeholder?: string;
-  debounceDelay?: number;
 }
 
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChangeText,
-  onSearch,
   onClear,
-  placeholder = 'Search card by name or slug...',
-  debounceDelay = 500,
+  placeholder = 'Search...',
 }) => {
   const { colors } = useTheme();
-
-  useEffect(() => {
-    if (!onSearch) return;
-
-    if (!value.trim()) {
-      onSearch('');
-      return;
-    }
-
-    const handler = setTimeout(() => {
-      onSearch(value);
-    }, debounceDelay);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [value, debounceDelay, onSearch]);
 
   return (
     <View
@@ -58,7 +37,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({
         placeholderTextColor={colors.textMuted}
         autoCorrect={false}
         autoCapitalize="none"
-        accessibilityLabel="Search cards"
+        accessibilityLabel="Search"
         testID="search-input"
       />
       {value.length > 0 && (
