@@ -1,8 +1,7 @@
 import React from 'react';
-import renderer, { act } from 'react-test-renderer';
 import { CardTypesScreen } from '@/features/cardTypes/screens/CardTypesScreen';
-import { ThemeProvider } from '@/core/theme';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
+import { renderWithTheme, fireEvent, waitFor } from '@/core/testing/testUtils';
 
 jest.mock('@/features/cardTypes/cardsApi/cardsApi', () => ({
   fetchCards: jest.fn().mockResolvedValue({
@@ -33,29 +32,20 @@ describe('CardTypesScreen Unit Test (Card Types List UI)', () => {
   });
 
   it('renders card types list and navigates on tile press', async () => {
-    let tree: renderer.ReactTestRenderer;
-    await act(async () => {
-      tree = renderer.create(
-        <ThemeProvider>
-          <CardTypesScreen navigation={mockNavigation} route={{} as any} />
-        </ThemeProvider>
-      );
+    const { getByTestId } = await renderWithTheme(
+      <CardTypesScreen navigation={mockNavigation} route={{} as any} />
+    );
+
+    expect(getByTestId('header-container')).toBeTruthy();
+    expect(getByTestId('search-bar-container')).toBeTruthy();
+
+    await waitFor(() => {
+      expect(getByTestId('card-tile-1')).toBeTruthy();
+      expect(getByTestId('card-tile-2')).toBeTruthy();
     });
 
-    const instance = tree!.root;
-    expect(instance.findByProps({ testID: 'header-container' })).toBeTruthy();
-    expect(instance.findByProps({ testID: 'search-bar-container' })).toBeTruthy();
-
-    // Verify unique card tiles are present
-    const tile1 = instance.findByProps({ testID: 'card-tile-1' });
-    expect(tile1).toBeTruthy();
-    const tile2 = instance.findByProps({ testID: 'card-tile-2' });
-    expect(tile2).toBeTruthy();
-
-    // Trigger press on first tile and assert navigation to CardListScreen
-    act(() => {
-      tile1.props.onPress();
-    });
+    const tile1 = getByTestId('card-tile-1');
+    await fireEvent.press(tile1);
 
     expect(mockNavigate).toHaveBeenCalledWith('CardListScreen', { type: 'Spell' });
   });

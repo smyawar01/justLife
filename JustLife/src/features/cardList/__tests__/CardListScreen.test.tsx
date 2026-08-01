@@ -1,8 +1,7 @@
 import React from 'react';
-import renderer, { act } from 'react-test-renderer';
 import { CardListScreen } from '@/features/cardList/screens/CardListScreen';
-import { ThemeProvider } from '@/core/theme';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
+import { renderWithTheme, fireEvent, act } from '@/core/testing/testUtils';
 
 describe('CardListScreen Unit Test', () => {
   const mockGoBack = jest.fn();
@@ -11,99 +10,56 @@ describe('CardListScreen Unit Test', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
-    act(() => {
-      useCardsStore.setState({
-        cards: [
-          { cardId: '1', name: 'Fireball', type: 'Spell', rarity: 'Free' },
-          { cardId: '2', name: 'Frostbolt', type: 'Spell', rarity: 'Common' },
-          { cardId: '3', name: 'Yeti', type: 'Minion', rarity: 'Common' },
-        ],
-        uniqueCardsByType: [],
-        isLoading: false,
-        error: null,
-      });
+    useCardsStore.setState({
+      cards: [
+        { cardId: '1', name: 'Fireball', type: 'Spell', rarity: 'Free' },
+        { cardId: '2', name: 'Frostbolt', type: 'Spell', rarity: 'Common' },
+        { cardId: '3', name: 'Yeti', type: 'Minion', rarity: 'Common' },
+      ],
+      uniqueCardsByType: [],
+      isLoading: false,
+      error: null,
     });
   });
 
-  afterEach(() => {
-    jest.runOnlyPendingTimers();
+  afterEach(async () => {
+    await act(async () => {
+      jest.runAllTimers();
+    });
     jest.useRealTimers();
   });
 
-  it('renders only cards matching the requested route param type', () => {
+  it('renders only cards matching the requested route param type', async () => {
     const mockRoute = { params: { type: 'Spell' } } as any;
-    let tree: renderer.ReactTestRenderer;
+    const { getByTestId, queryByTestId } = await renderWithTheme(
+      <CardListScreen navigation={mockNavigation} route={mockRoute} />
+    );
 
-    act(() => {
-      tree = renderer.create(
-        <ThemeProvider>
-          <CardListScreen navigation={mockNavigation} route={mockRoute} />
-        </ThemeProvider>
-      );
-    });
-
-    const instance = tree!.root;
-
-    // Both Spell cards should be present
-    expect(instance.findByProps({ testID: 'card-tile-1' })).toBeTruthy();
-    expect(instance.findByProps({ testID: 'card-tile-2' })).toBeTruthy();
-
-    // The Minion card should NOT be rendered
-    expect(() => instance.findByProps({ testID: 'card-tile-3' })).toThrow();
-
-    act(() => {
-      tree!.unmount();
-    });
+    expect(getByTestId('card-tile-1')).toBeTruthy();
+    expect(getByTestId('card-tile-2')).toBeTruthy();
+    expect(queryByTestId('card-tile-3')).toBeNull();
   });
 
-  it('triggers navigation.goBack() when back button is pressed', () => {
+  it('triggers navigation.goBack() when back button is pressed', async () => {
     const mockRoute = { params: { type: 'Spell' } } as any;
-    let tree: renderer.ReactTestRenderer;
+    const { getByTestId } = await renderWithTheme(
+      <CardListScreen navigation={mockNavigation} route={mockRoute} />
+    );
 
-    act(() => {
-      tree = renderer.create(
-        <ThemeProvider>
-          <CardListScreen navigation={mockNavigation} route={mockRoute} />
-        </ThemeProvider>
-      );
-    });
-
-    const instance = tree!.root;
-    const backButton = instance.findByProps({ testID: 'header-back-button' });
-    expect(backButton).toBeTruthy();
-
-    act(() => {
-      backButton.props.onPress();
-    });
-
+    const backButton = getByTestId('header-back-button');
+    await fireEvent.press(backButton);
     expect(mockGoBack).toHaveBeenCalledTimes(1);
-
-    act(() => {
-      tree!.unmount();
-    });
   });
 
-  it('displays empty list message when no cards match the type', () => {
+  it('displays empty list message when no cards match the type', async () => {
     const mockRoute = { params: { type: 'Weapon' } } as any;
-    let tree: renderer.ReactTestRenderer;
+    const { getByTestId, queryByTestId, getByText } = await renderWithTheme(
+      <CardListScreen navigation={mockNavigation} route={mockRoute} />
+    );
 
-    act(() => {
-      tree = renderer.create(
-        <ThemeProvider>
-          <CardListScreen navigation={mockNavigation} route={mockRoute} />
-        </ThemeProvider>
-      );
-    });
-
-    const instance = tree!.root;
-    expect(() => instance.findByProps({ testID: 'card-tile-1' })).toThrow();
-    expect(() => instance.findByProps({ testID: 'card-tile-3' })).toThrow();
-
-    const emptyMsg = instance.findByProps({ testID: 'empty-list-message' });
-    expect(emptyMsg.props.children).toEqual(['No cards found for type: ', 'Weapon']);
-
-    act(() => {
-      tree!.unmount();
-    });
+    expect(queryByTestId('card-tile-1')).toBeNull();
+    expect(queryByTestId('card-tile-3')).toBeNull();
+    expect(getByTestId('empty-list-message')).toBeTruthy();
+    expect(getByText('No cards found for type: Weapon')).toBeTruthy();
   });
 });
