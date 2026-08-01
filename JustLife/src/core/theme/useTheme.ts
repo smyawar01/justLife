@@ -7,7 +7,6 @@ import { spacing } from './spacing';
 export function useTheme(): ThemeContextType {
   const context = useContext(ThemeContext);
   if (!context) {
-    // Fallback if rendered outside of provider (useful for standalone unit tests)
     return {
       mode: 'light',
       isDark: false,
@@ -16,8 +15,8 @@ export function useTheme(): ThemeContextType {
       colors: lightColors,
       typography,
       spacing,
-      toggleTheme: () => {},
-      setMode: () => {},
+      toggleTheme: () => { },
+      setMode: () => { },
     };
   }
   return context;
