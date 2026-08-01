@@ -34,7 +34,7 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
         renderItem={({ item }) => <CardTile card={item} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Text style={[styles.emptyText, { color: colors.textMuted }]}>
+            <Text style={[styles.emptyText, { color: colors.textMuted }]} testID="empty-list-message">
               No cards found for type: {type}
             </Text>
           </View>

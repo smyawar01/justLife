@@ -45,7 +45,7 @@ describe('CardTypesScreen Unit Test (Card Types List UI)', () => {
     const instance = tree!.root;
     expect(instance.findByProps({ testID: 'header-container' })).toBeTruthy();
     expect(instance.findByProps({ testID: 'search-bar-container' })).toBeTruthy();
-    
+
     // Verify unique card tiles are present
     const tile1 = instance.findByProps({ testID: 'card-tile-1' });
     expect(tile1).toBeTruthy();
