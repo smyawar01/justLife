@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, ActivityIndicator, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../../../core/theme/useTheme';
+import { useTheme } from '@/core/theme';
 
 export interface LoadingViewProps {
   message?: string;

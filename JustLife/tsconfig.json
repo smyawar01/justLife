@@ -5,6 +5,11 @@
     "types": ["jest", "node"],
     "moduleResolution": "nodenext",
     "module": "nodenext",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@": ["src"]
+    }
   },
   "esModuleInterop": true,
   "allowSyntheticDefaultImports": true,

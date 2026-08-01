@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
-import { ApiResponse, FetchOptions } from '../networking/types/common';
+import { ApiResponse, FetchOptions } from '@/core/networking/types/common';
 
 const BASE_URL = process.env.API_BASE_URL || 'https://hearthstone11.p.rapidapi.com';
 const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || 'hearthstone11.p.rapidapi.com';

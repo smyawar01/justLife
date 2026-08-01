@@ -2,10 +2,10 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { CardListScreen } from '../../features/cardList/screens/CardListScreen';
-import { CardTypesScreen } from '../../features/cardTypes/screens/CardTypesScreen';
-import { RootStackParamList } from './types';
-import { useTheme } from '../../core/theme/useTheme';
+import { CardListScreen } from '@/features/cardList/screens/CardListScreen';
+import { CardTypesScreen } from '@/features/cardTypes/screens/CardTypesScreen';
+import { RootStackParamList } from '@/app/navigation/types';
+import { useTheme } from '@/core/theme';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

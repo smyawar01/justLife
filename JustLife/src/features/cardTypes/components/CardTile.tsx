@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import { HearthstoneCard } from '../types/cards.types';
-import { useTheme } from '../../../core/theme/useTheme';
+import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
+import { useTheme } from '@/core/theme';
 
 export interface CardTileProps {
   card: HearthstoneCard;

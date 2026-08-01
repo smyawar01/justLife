@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, TextInput, TouchableOpacity, Text, StyleSheet } from 'react-native';
-import { useTheme } from '../../../core/theme/useTheme';
+import { useTheme } from '@/core/theme';
 
 export interface SearchBarProps {
   value: string;

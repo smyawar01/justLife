@@ -1,13 +1,11 @@
 import React, { useEffect } from 'react';
 import { View, FlatList, StyleSheet, Text } from 'react-native';
-import { useCardsStore } from '../store/useCardsStore';
-import { CardTile } from '../components/CardTile';
-import { Header } from '../../shared/components/Header';
-import { LoadingView } from '../../shared/components/LoadingView';
-import { ErrorView } from '../../shared/components/ErrorView';
-import { useTheme } from '../../../core/theme/useTheme';
-import { HearthstoneCard } from '../types/cards.types';
-import { CardTypesScreenProps } from '../../../app/navigation/types';
+import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
+import { CardTile } from '@/features/cardTypes/components';
+import { Header, LoadingView, ErrorView } from '@/features/shared/components';
+import { useTheme } from '@/core/theme';
+import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
+import { CardTypesScreenProps } from '@/app/navigation/types';
 
 export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) => {
   const { colors } = useTheme();

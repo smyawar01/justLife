@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
-import { CardListScreenProps } from '../../../app/navigation/types';
-import { useCardsStore } from '../../cardTypes/store/useCardsStore';
-import { CardTile } from '../../cardTypes/components/CardTile';
-import { Header } from '../../shared/components/Header';
-import { useTheme } from '../../../core/theme/useTheme';
-import { HearthstoneCard } from '../../cardTypes/types/cards.types';
+import { CardListScreenProps } from '@/app/navigation/types';
+import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
+import { CardTile } from '@/features/cardTypes/components';
+import { Header } from '@/features/shared/components';
+import { useTheme } from '@/core/theme';
+import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 
 export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigation }) => {
   const { type } = route.params;

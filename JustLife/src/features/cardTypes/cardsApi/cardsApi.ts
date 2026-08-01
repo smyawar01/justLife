@@ -1,5 +1,5 @@
-import { httpGet } from '../../../core/networking/httpClient';
-import { HearthstoneCard, RawCardItem, CardsApiResponse } from '../types/cards.types';
+import { httpGet } from '@/core/networking/httpClient';
+import { HearthstoneCard, RawCardItem, CardsApiResponse } from '@/features/cardTypes/types/cards.types';
 
 export async function fetchCards(): Promise<{ cards: HearthstoneCard[]; error: string | null }> {
   const response = await httpGet<CardsApiResponse | RawCardItem[]>(

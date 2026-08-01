@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { HearthstoneCard } from '../types/cards.types';
-import { fetchCards } from '../cardsApi/cardsApi';
+import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
+import { fetchCards } from '@/features/cardTypes/cardsApi/cardsApi';
 
 export interface CardsState {
   cards: HearthstoneCard[];
