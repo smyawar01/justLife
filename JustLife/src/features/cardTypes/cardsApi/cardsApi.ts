@@ -60,7 +60,10 @@ function parseCard(raw: RawCardItem | any): HearthstoneCard {
 
   let imageUrl = raw?.image || raw?.img;
   if (!imageUrl && raw?.slug) {
-    imageUrl = `https://images.hearthstoneapi.com/enUS/${raw.slug}.png`;
+    const imageBaseUrl = process.env.IMAGE_BASE_URL;
+    if (imageBaseUrl) {
+      imageUrl = `${imageBaseUrl}/${raw.slug}.png`;
+    }
   }
 
   return {

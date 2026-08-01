@@ -1,10 +1,9 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ApiResponse, FetchOptions } from '@/core/networking/types/common';
 
-const BASE_URL = process.env.API_BASE_URL || 'https://hearthstone11.p.rapidapi.com';
-const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST || 'hearthstone11.p.rapidapi.com';
-const RAPIDAPI_KEY =
-  process.env.RAPIDAPI_KEY || '4c5df477famsh92fe78112f0425bp1fcab3jsn4aff7069feab';
+const BASE_URL = process.env.API_BASE_URL;
+const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST;
+const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,

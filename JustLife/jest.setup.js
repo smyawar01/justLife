@@ -1,5 +1,11 @@
 import 'react-native';
 
+// Set test environment variables
+process.env.API_BASE_URL = 'https://hearthstone11.p.rapidapi.com';
+process.env.RAPIDAPI_HOST = 'hearthstone11.p.rapidapi.com';
+process.env.RAPIDAPI_KEY = 'mock-test-api-key';
+process.env.IMAGE_BASE_URL = 'https://images.hearthstoneapi.com/enUS';
+
 // Mock react-native-safe-area-context
 jest.mock('react-native-safe-area-context', () => {
   const React = require('react');
