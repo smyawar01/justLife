@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react';
 import { View, FlatList, Text, StyleSheet } from 'react-native';
-import { CardListScreenProps } from '@/app/navigation/types';
+import { CardListScreenProps } from '@/navigation/types';
 import { useCardsStore } from '@/features/cardTypes/store/useCardsStore';
 import { CardTile } from '@/features/cardTypes/components';
 import { Header } from '@/features/shared/components';

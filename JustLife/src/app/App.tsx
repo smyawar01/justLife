@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { AppNavigator } from '@/app/navigation/AppNavigator';
+import { AppNavigator } from '@/navigation/AppNavigator';
 import { ThemeProvider } from '@/core/theme';
 
 export default function App() {

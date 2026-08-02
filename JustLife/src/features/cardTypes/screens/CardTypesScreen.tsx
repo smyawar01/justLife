@@ -6,7 +6,7 @@ import { CardTile } from '@/features/cardTypes/components';
 import { Header, LoadingView, ErrorView, SearchBar, EmptySearchView, useSearch } from '@/features/shared/components';
 import { useTheme } from '@/core/theme';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
-import { CardTypesScreenProps } from '@/app/navigation/types';
+import { CardTypesScreenProps } from '@/navigation/types';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export const CardTypesScreen: React.FC<CardTypesScreenProps> = ({ navigation }) => {
