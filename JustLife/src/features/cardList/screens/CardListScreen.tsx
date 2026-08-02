@@ -23,11 +23,6 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
     []
   );
 
-  const keyExtractor = useCallback(
-    (item: HearthstoneCard, index: number) => item.cardId || `${item.name}-${index}`,
-    []
-  );
-
   return (
     <SafeAreaView edges={['bottom', 'left', 'right']} style={[styles.container, { backgroundColor: colors.background }]}>
       <Header
@@ -39,7 +34,7 @@ export const CardListScreen: React.FC<CardListScreenProps> = ({ route, navigatio
 
       <FlatList<HearthstoneCard>
         data={filteredCards}
-        keyExtractor={keyExtractor}
+        keyExtractor={(item: HearthstoneCard) => item.cardId}
         renderItem={renderCardTile}
         initialNumToRender={10}
         maxToRenderPerBatch={10}

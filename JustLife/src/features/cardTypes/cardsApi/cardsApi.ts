@@ -68,7 +68,7 @@ function parseCard(raw: RawCardItem | any): HearthstoneCard {
   }
 
   return {
-    cardId: String(raw?.cardId || raw?.id || raw?.slug || raw?.name || Math.random().toString()),
+    cardId: String(raw?.cardId || Math.random().toString()),
     slug: raw?.slug,
     name: raw?.name || 'Unnamed Card',
     rarity: rarityName,
