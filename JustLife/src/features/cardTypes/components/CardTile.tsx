@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { useTheme } from '@/core/theme';
-import { stripHtml } from '@/app/utils/textUtils';
+import { stripHtml } from '@/utils/textUtils';
 import { getRarityColor } from '@/features/cardTypes/utils/cardUtils';
 
 export interface CardTileProps {
@@ -17,9 +17,8 @@ const CardTileComponent: React.FC<CardTileProps> = ({ card, onPress }) => {
   const rarityColor = getRarityColor(card.rarity, colors.textMuted);
   const cleanText = useMemo(() => stripHtml(card.text), [card.text]);
 
-  const accessibilityLabel = `${card.name}${card.rarity ? `, ${card.rarity} rarity` : ''}${
-    card.type ? `, ${card.type}` : ''
-  }`;
+  const accessibilityLabel = `${card.name}${card.rarity ? `, ${card.rarity} rarity` : ''}${card.type ? `, ${card.type}` : ''
+    }`;
 
   return (
     <TouchableOpacity
