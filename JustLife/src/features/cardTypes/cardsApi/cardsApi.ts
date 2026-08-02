@@ -1,5 +1,6 @@
 import { httpGet } from '@/core/networking/httpClient';
 import { HearthstoneCard, RawCardItem, CardsApiResponse } from '@/features/cardTypes/types/cards.types';
+import AppConfig from '@/config/AppConfig';
 
 export async function fetchCards(): Promise<{ cards: HearthstoneCard[]; error: string | null }> {
   const response = await httpGet<CardsApiResponse | RawCardItem[]>(
@@ -60,7 +61,7 @@ function parseCard(raw: RawCardItem | any): HearthstoneCard {
 
   let imageUrl = raw?.image || raw?.img;
   if (!imageUrl && raw?.slug) {
-    const imageBaseUrl = process.env.IMAGE_BASE_URL;
+    const imageBaseUrl = AppConfig.IMAGE_BASE_URL;
     if (imageBaseUrl) {
       imageUrl = `${imageBaseUrl}/${raw.slug}.png`;
     }

@@ -6,6 +6,20 @@ process.env.RAPIDAPI_HOST = 'hearthstone11.p.rapidapi.com';
 process.env.RAPIDAPI_KEY = 'mock-test-api-key';
 process.env.IMAGE_BASE_URL = 'https://images.hearthstoneapi.com/enUS';
 
+jest.mock('react-native-config', () => {
+  const config = {
+    API_BASE_URL: 'https://hearthstone11.p.rapidapi.com',
+    RAPIDAPI_HOST: 'hearthstone11.p.rapidapi.com',
+    RAPIDAPI_KEY: 'mock-test-api-key',
+    IMAGE_BASE_URL: 'https://images.hearthstoneapi.com/enUS',
+  };
+  return {
+    __esModule: true,
+    default: config,
+    ...config,
+  };
+});
+
 // Mock react-native-safe-area-context
 jest.mock('react-native-safe-area-context', () => {
   const React = require('react');

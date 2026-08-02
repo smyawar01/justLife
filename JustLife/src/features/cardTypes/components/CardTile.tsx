@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { HearthstoneCard } from '@/features/cardTypes/types/cards.types';
 import { useTheme } from '@/core/theme';
-import { stripHtml } from '@/core/utils/textUtils';
+import { stripHtml } from '@/app/utils/textUtils';
 import { getRarityColor } from '@/features/cardTypes/utils/cardUtils';
 
 export interface CardTileProps {

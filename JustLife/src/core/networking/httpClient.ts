@@ -1,9 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { ApiResponse, FetchOptions } from '@/core/networking/types/common';
+import AppConfig from '@/config/AppConfig';
 
-const BASE_URL = process.env.API_BASE_URL;
-const RAPIDAPI_HOST = process.env.RAPIDAPI_HOST;
-const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
+const BASE_URL = AppConfig.API_BASE_URL;
+const RAPIDAPI_HOST = AppConfig.RAPIDAPI_HOST;
+const RAPIDAPI_KEY = AppConfig.RAPIDAPI_KEY;
 
 export const axiosInstance = axios.create({
   baseURL: BASE_URL,
